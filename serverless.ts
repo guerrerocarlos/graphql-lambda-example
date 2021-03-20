@@ -2,12 +2,7 @@ import type { AWS } from "@serverless/typescript";
 
 const serverlessConfiguration: AWS = {
   service: "graphql-lambda-example",
-  // frameworkVersion: '2',
-  // Add the serverless-webpack plugin
   plugins: ["serverless-webpack"],
-  // "plugins": [
-  //   "serverless-plugin-typescript",
-  // ],
   provider: {
     apiGateway: {
       shouldStartNameWithService: true,
@@ -15,7 +10,6 @@ const serverlessConfiguration: AWS = {
     name: "aws",
     runtime: "nodejs12.x",
     stage: "dev",
-    region: "eu-west-3",
     memorySize: 512,
     iam: {
       role: {
@@ -49,7 +43,9 @@ const serverlessConfiguration: AWS = {
         "Fn::Join": [
           "",
           [
-            "https://sqs.eu-west-3.amazonaws.com/",
+            "https://sqs.",
+            { Ref: "AWS::Region" },
+            ".amazonaws.com/",
             { Ref: "AWS::AccountId" },
             "/${self:custom.eventSQSFifo}",
           ],
@@ -126,17 +122,7 @@ const serverlessConfiguration: AWS = {
       webpackConfig: "./webpack.config.js",
       includeModules: true,
     },
-    // "webpack": {
-    //   "keepOutputDirectory": true
-    // }
   },
-  // "package": {
-  //   "exclude": [
-  //     "node_modules/.pnpm/**",
-  //     "node_modules/.ignored/**",
-  //     "node_modules/aws-sdk/**",
-  //   ]
-  // },
   resources: {
     Resources: {
       sqsfifo: {
